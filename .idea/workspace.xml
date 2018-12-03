@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="3a457b02-3bd6-49eb-9129-c304489d2f5b" name="Default Changelist" comment="" />
+    <list default="true" id="3a457b02-3bd6-49eb-9129-c304489d2f5b" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -54,25 +56,13 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/maABEGeneral.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-2900">
-              <caret line="52" selection-start-line="52" selection-end-line="52" />
+            <state relative-caret-position="475">
+              <caret line="277" column="3" lean-forward="true" selection-start-line="277" selection-start-column="3" selection-end-line="277" selection-end-column="3" />
               <folding>
                 <element signature="e#0#13#0" expanded="true" />
                 <marker date="1543594323958" expanded="true" signature="1099:1470" ph="..." />
                 <marker date="1543594323958" expanded="true" signature="1537:1538" ph="..." />
                 <marker date="1543594323958" expanded="true" signature="4683:5775" ph="..." />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/check.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="450">
-              <caret line="32" column="30" selection-start-line="32" selection-start-column="30" selection-end-line="32" selection-end-column="30" />
-              <folding>
-                <element signature="e#0#40#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -111,8 +101,9 @@
     <sorting>DEFINITION_ORDER</sorting>
   </component>
   <component name="ProjectFrameBounds" fullScreen="true">
+    <option name="y" value="23" />
     <option name="width" value="1680" />
-    <option name="height" value="1050" />
+    <option name="height" value="960" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -298,25 +289,25 @@
     <entry file="file://$PROJECT_DIR$/CipherText.pkl">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
+    <entry file="file://$PROJECT_DIR$/check.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="480">
+          <caret line="32" column="30" selection-start-line="32" selection-start-column="30" selection-end-line="32" selection-end-column="30" />
+          <folding>
+            <element signature="e#0#40#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/maABEGeneral.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-2900">
-          <caret line="52" selection-start-line="52" selection-end-line="52" />
+        <state relative-caret-position="475">
+          <caret line="277" column="3" lean-forward="true" selection-start-line="277" selection-start-column="3" selection-end-line="277" selection-end-column="3" />
           <folding>
             <element signature="e#0#13#0" expanded="true" />
             <marker date="1543594323958" expanded="true" signature="1099:1470" ph="..." />
             <marker date="1543594323958" expanded="true" signature="1537:1538" ph="..." />
             <marker date="1543594323958" expanded="true" signature="4683:5775" ph="..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/check.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="450">
-          <caret line="32" column="30" selection-start-line="32" selection-start-column="30" selection-end-line="32" selection-end-column="30" />
-          <folding>
-            <element signature="e#0#40#0" expanded="true" />
           </folding>
         </state>
       </provider>
