@@ -4,9 +4,10 @@ from charm.toolbox.pairinggroup import *
 from charm.toolbox.secretutil import SecretUtil
 import sys
 import re
+from charm.toolbox.symcrypto import AuthenticatedCryptoAbstraction, SymmetricCryptoAbstraction
 
 try:
-    from charm.core.math.pairing import G1, G2, pair, ZR, GT
+    from charm.core.math.pairing import G1, G2, pair, ZR, GT, hashPair as extractor
 except Exception as err:
     print(err)
     exit(-1)
@@ -105,7 +106,15 @@ def mergeSecretKeysUser(keyListFileNames):
     return mergeSecret
 
 
-def encrypt(readFileGP, readFilePublicKeyDic, message, policyString):
+def encryptAES(encryptionFileAES):
+    keyAES = group.random(GT)
+    symcrypt = AuthenticatedCryptoAbstraction(extractor(keyAES))  # or SymmetricCryptoAbstraction without authentication
+    ciphertext = symcrypt.encrypt(encryptionFileAES)
+
+    return keyAES, ciphertext
+
+
+def encryptMAABE(readFileGP, readFilePublicKeyDic, message, policyString):
     pickleFileGP = pickleLoad(readFileGP)
     print("Policy:" + policyString)
     gp = byToOb(pickleFileGP)
@@ -141,7 +150,7 @@ def encrypt(readFileGP, readFilePublicKeyDic, message, policyString):
     return {'policy': policyString, 'C0': C0, 'C1': C1, 'C2': C2, 'C3': C3, 'C4': C4}
 
 
-def decrypt(readFileGP, readFileUserSecretKey, readFileCipherText):
+def decryptMAABE(readFileGP, readFileUserSecretKey, readFileCipherText):
     pickleFileGP = pickleLoad(readFileGP)
     gp = byToOb(pickleFileGP)
     gp.update({'H': H, 'F': F})
@@ -169,9 +178,19 @@ def decrypt(readFileGP, readFileUserSecretKey, readFileCipherText):
     print("Decrypt")
     # print("SK:")
     # print(sk)
-    print("Decrypted Message:")
+    print("Decrypted AES Key using MAABE:")
     print(ct['C0'] / B)
-    # return ct['C0'] / B
+    return ct['C0'] / B
+
+
+def decryptAES(readFileCipherText, keyAES):
+    pickleFileCipherText = pickleLoad(readFileCipherText)
+    ct = byToOb(pickleFileCipherText)
+
+    symcrypt = AuthenticatedCryptoAbstraction(extractor(keyAES))
+    recoveredMsg = symcrypt.decrypt(ct)
+    print("Decrypted File using AES:")
+    print(recoveredMsg.decode("utf-8"))
 
 
 def pickleDump(bytes, fileName):
@@ -256,27 +275,42 @@ if __name__ == '__main__':
         pickleDump(byteSecretKey, secretKeyFileName)
         print(secretKey)
 
-    # arguments > encrypt, GlobalParameters.pkl, publicKeyDic, message, policyString
+    # arguments > encrypt, GlobalParameters.pkl, publicKeyDic, FileToEncrypt, policyString
     # policy parenthesis to be written with \ to provide bash to read it  \(Check\)
     elif sys.argv[1] == 'encrypt':
         readFileGP = readFile(sys.argv[2])
         readFilePublicKeyDic = readFile(sys.argv[3])
-        message = sys.argv[4]
-        randomMessage = group.random(GT)  # Not able to insert message string as algorithm is based on pairing groups
+        readFileMessage = readFile(sys.argv[4])
+        encryptionFileAES = readFileMessage.read()
+        # randomMessage = group.random(GT)  # Not able to insert message string as algorithm is based on pairing groups
         policyString = sys.argv[5]
         # print(policyString)
-        cipherText = encrypt(readFileGP, readFilePublicKeyDic, randomMessage, policyString)
-        print("CipherText", cipherText)
-        cipherTextFileName = "CipherText" + ".pkl"
-        byteCipherText = obToBy(cipherText)
-        pickleDump(byteCipherText, cipherTextFileName)
+        keyAES, cipherTextAESEncrypt = encryptAES(encryptionFileAES)
 
-    # arguments > decrypt, GlobalParameters.pkl, User_SecretKey.pkl, CipherText.pkl
+        message = keyAES
+
+        print(type(message))
+
+        cipherTextAESKeyMAABEEncrypt = encryptMAABE(readFileGP, readFilePublicKeyDic, message, policyString)
+
+        print("CipherTextAESEncrypt", cipherTextAESEncrypt)
+        cipherTextFileName = "CipherTextAESEncrypt" + ".pkl"
+        byteCipherTextAESEncrypt = obToBy(cipherTextAESEncrypt)
+        pickleDump(byteCipherTextAESEncrypt, cipherTextFileName)
+
+        print("CipherAESKeyMAABEEncrypt", cipherTextAESKeyMAABEEncrypt)
+        cipherTextFileName = "CipherAESKeyMAABEEncrypt" + ".pkl"
+        byteCipherTextAESKeyMAABEEncrypt = obToBy(cipherTextAESKeyMAABEEncrypt)
+        pickleDump(byteCipherTextAESKeyMAABEEncrypt, cipherTextFileName)
+
+    # arguments > decrypt, GlobalParameters.pkl, CipherAESKeyMAABEEncrypt.pkl, User_SecretKey.pkl, CipherTextAESEncrypt.pkl
     elif sys.argv[1] == 'decrypt':
         readFileGP = readFile(sys.argv[2])
-        readFileUserSecretKey = readFile(sys.argv[3])
-        readFileCipherText = readFile(sys.argv[4])
-        decrypt(readFileGP, readFileUserSecretKey, readFileCipherText)
+        readFileAESKeyMAABEEncryptCipher = readFile(sys.argv[3])
+        readFileUserSecretKey = readFile(sys.argv[4])
+        readFileCipherText = readFile(sys.argv[5])
+        keyAES = decryptMAABE(readFileGP, readFileUserSecretKey, readFileAESKeyMAABEEncryptCipher)
+        decryptAES(readFileCipherText, keyAES)
 
     else:
         print("Wrong Arguments Entered")
