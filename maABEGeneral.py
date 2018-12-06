@@ -191,6 +191,7 @@ def decryptAES(readFileCipherText, keyAES):
     recoveredMsg = symcrypt.decrypt(ct)
     print("Decrypted File using AES:")
     print(recoveredMsg.decode("utf-8"))
+    return recoveredMsg
 
 
 def pickleDump(bytes, fileName):
@@ -282,15 +283,16 @@ if __name__ == '__main__':
         readFilePublicKeyDic = readFile(sys.argv[3])
         readFileMessage = readFile(sys.argv[4])
         encryptionFileAES = readFileMessage.read()
-        # randomMessage = group.random(GT)  # Not able to insert message string as algorithm is based on pairing groups
         policyString = sys.argv[5]
         # print(policyString)
+
+        # Encrypting the file with AES and returning AESKey and CipherText encrypted by AES
         keyAES, cipherTextAESEncrypt = encryptAES(encryptionFileAES)
 
+        # AESKey becomes message for the MA_ABE to encrypt
         message = keyAES
 
-        print(type(message))
-
+        # Encrypting AES key using MA_ABE under the policy
         cipherTextAESKeyMAABEEncrypt = encryptMAABE(readFileGP, readFilePublicKeyDic, message, policyString)
 
         print("CipherTextAESEncrypt", cipherTextAESEncrypt)
@@ -309,8 +311,12 @@ if __name__ == '__main__':
         readFileAESKeyMAABEEncryptCipher = readFile(sys.argv[3])
         readFileUserSecretKey = readFile(sys.argv[4])
         readFileCipherText = readFile(sys.argv[5])
+        # Decrypting AES key from MA_ABE decryption using user secret key
         keyAES = decryptMAABE(readFileGP, readFileUserSecretKey, readFileAESKeyMAABEEncryptCipher)
-        decryptAES(readFileCipherText, keyAES)
-
+        # Decrypting File to using AES key
+        recoverdFile = decryptAES(readFileCipherText, keyAES)
+        recoverdFileName = "RecoveredFile" + ".txt"
+        f = open(recoverdFileName, 'wb')
+        f.write(recoverdFile)
     else:
         print("Wrong Arguments Entered")
